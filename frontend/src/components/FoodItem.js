@@ -3,12 +3,15 @@ import { UsersIcon, PlusIcon, CheckIcon } from './Icons';
 
 function FoodItem({ item, onAddToCart }) {
   const [isAdded, setIsAdded] = useState(false);
-  const [imgSrc, setImgSrc] = useState(item.image);
+
+  // Reliable food fallback photography
+  const fallbackImage = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80';
+  const svgPlaceholder = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%23f1f5f9"/><circle cx="200" cy="130" r="50" fill="%23cbd5e1"/><text x="200" y="220" font-family="system-ui,sans-serif" font-size="16" font-weight="bold" fill="%2364748b" text-anchor="middle">${encodeURIComponent(item.name || 'Fresh Homemade Meal')}</text></svg>`;
+
+  const [imgSrc, setImgSrc] = useState(item.imageUrl || item.image || fallbackImage);
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   const isAvailableToday = item.available && item.available.includes(today);
-
-  const fallbackImage = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=60';
 
   const handleAdd = () => {
     onAddToCart(item);
@@ -18,6 +21,14 @@ function FoodItem({ item, onAddToCart }) {
     }, 1200);
   };
 
+  const handleImageError = () => {
+    if (imgSrc !== fallbackImage && imgSrc !== svgPlaceholder) {
+      setImgSrc(fallbackImage);
+    } else if (imgSrc === fallbackImage) {
+      setImgSrc(svgPlaceholder);
+    }
+  };
+
   return (
     <div className="food-card">
       <div className="food-image-wrapper">
@@ -25,7 +36,7 @@ function FoodItem({ item, onAddToCart }) {
           src={imgSrc}
           alt={item.name}
           className="food-image"
-          onError={() => setImgSrc(fallbackImage)}
+          onError={handleImageError}
           loading="lazy"
         />
         <div className="image-overlay-serves">
