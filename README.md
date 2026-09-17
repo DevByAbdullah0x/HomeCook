@@ -62,8 +62,8 @@ Make sure you have the following installed locally:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/DevByAbdullah0x/homecook-app.git
-cd homecook-app
+git clone https://github.com/DevByAbdullah0x/HomeCook.git
+cd HomeCook
 ```
 
 ---
@@ -145,3 +145,4 @@ This project is licensed under the [MIT License](LICENSE) - see the LICENSE file
 ---
 
 Crafted with ❤️ by [DevByAbdullah0x](https://github.com/DevByAbdullah0x).
+
