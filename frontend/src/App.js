@@ -40,6 +40,36 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Verify admin session token with backend
+  useEffect(() => {
+    const token = localStorage.getItem('homecook_admin_token');
+    if (!token) {
+      setIsAdminAuthenticated(false);
+      return;
+    }
+
+    const verifySession = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/admin/verify', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        if (response.ok && data.valid) {
+          setIsAdminAuthenticated(true);
+        } else {
+          localStorage.removeItem('homecook_admin_token');
+          setIsAdminAuthenticated(false);
+        }
+      } catch (err) {
+        console.warn('Session verification check failed, retaining session offline:', err.message);
+      }
+    };
+
+    verifySession();
+  }, [currentPage]);
+
   const navigateTo = (page) => {
     setCurrentPage(page);
     const targetUrl = page === 'home' ? '/' : `/${page}`;
